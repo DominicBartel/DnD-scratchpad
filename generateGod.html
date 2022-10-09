@@ -79,8 +79,8 @@
     var newDemiplane = function () {
         if (spellslots[8] > 0) {
             generatedData.rooms.push({
-                wards: [],
-                symbols: [],
+                wards: 0,
+                symbols: 0,
                 totalDamage: {
                     d10: 0,
                     d8: 0
@@ -102,14 +102,14 @@
                     generatedLogs = generatedLogs +  `Adding symbol to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
                     `
                     generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d10 += 10
-                    generatedData.rooms[generatedData.rooms.length - 1].symbols.push("Death, 10d10")
+                    generatedData.rooms[generatedData.rooms.length - 1].symbols++
 
                 } else if (slot > 2) {
                     generatedLogs = generatedLogs +  `Adding glyph of warding to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
                     `
                     var dice = (i + 5)
                     generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d8 += dice
-                    generatedData.rooms[generatedData.rooms.length - 1].wards.push("Thunder Ward, " + dice + "d10")
+                    generatedData.rooms[generatedData.rooms.length - 1].wards++
                 }
                 }
                 spellslots[i] = 0
@@ -120,14 +120,14 @@
                         generatedLogs = generatedLogs +  `Simulcrum adding symbol to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
                         `
                         generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d10 += 10
-                        generatedData.rooms[generatedData.rooms.length - 1].symbols.push("Death, 10d10")
+                        generatedData.rooms[generatedData.rooms.length - 1].symbols++
 
                     } else if (slot > 2) {
                         generatedLogs = generatedLogs +  `Simulcrum adding glyph of warding to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
                         `
                         var dice = (i + 5)
                         generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d8 += dice
-                        generatedData.rooms[generatedData.rooms.length - 1].wards.push("Thunder Ward, " + dice + "d10")
+                        generatedData.rooms[generatedData.rooms.length - 1].wards++
                     }
                 }
                 simulCrumspellslots[i] = 0
@@ -161,7 +161,6 @@
     }
 
     var buildCloneRoom = function(){
-        newDemiplane()
         generatedLogs = generatedLogs +  `Create clone in room using 9th level spell` + (generatedData.rooms.length - 1).toString() + `
         `
         generatedData.rooms[generatedData.rooms.length - 1].cloneRoom = true
@@ -174,6 +173,7 @@
         tryCreateResistance()
         for(var i = 0; i < clones; i ++){
             buildCloneRoom()
+            newDemiplane()
         }
         while(daysRun < daysFrom20){
             newDemiplane()
