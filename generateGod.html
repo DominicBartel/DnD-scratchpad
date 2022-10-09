@@ -73,7 +73,7 @@
         }
         daysRun++
         generatedLogs = generatedLogs +  `long rest, day is ` + daysRun + `
-        `
+`
     }
 
     var newDemiplane = function () {
@@ -90,7 +90,7 @@
             spellslots[8]--
         }
         generatedLogs = generatedLogs +  `Create room  ` + (generatedData.rooms.length - 1).toString() + ` using demiplane, level 8
-        `
+`
 
     }
 
@@ -98,33 +98,33 @@
         for (var slot in spellslots) {
             for (var i = 0; i < spellslots[slot]; i++) {
 
-                if (slot > 6) {
-                    generatedLogs = generatedLogs +  `Adding symbol to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
-                    `
+                if (parseInt(slot) > 6) {
+                    generatedLogs = generatedLogs +  `Adding symbol to room ` + (generatedData.rooms.length - 1).toString() + " at level " + slot + `
+`
                     generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d10 += 10
                     generatedData.rooms[generatedData.rooms.length - 1].symbols++
 
-                } else if (slot > 2) {
-                    generatedLogs = generatedLogs +  `Adding glyph of warding to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
-                    `
+                } else if (parseInt(slot) > 2) {
+                    generatedLogs = generatedLogs +  `Adding glyph of warding to room ` + (generatedData.rooms.length - 1).toString() + " at level " + slot + `
+`
                     var dice = (i + 5)
                     generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d8 += dice
                     generatedData.rooms[generatedData.rooms.length - 1].wards++
                 }
                 }
                 spellslots[i] = 0
-            if (!excludeSpellSlots || slot != excludeSpellSlots) {
+            if (!excludeSpellSlots || parseInt(slot) != excludeSpellSlots) {
                 for (var i = 0; i < simulCrumspellslots[slot]; i++) {
 
-                    if (slot > 6) {
-                        generatedLogs = generatedLogs +  `Simulcrum adding symbol to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
-                        `
+                    if (parseInt(slot) > 6) {
+                        generatedLogs = generatedLogs +  `Simulcrum adding symbol to room ` + (generatedData.rooms.length - 1).toString() + " at level " + slot+ `
+`
                         generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d10 += 10
                         generatedData.rooms[generatedData.rooms.length - 1].symbols++
 
-                    } else if (slot > 2) {
-                        generatedLogs = generatedLogs +  `Simulcrum adding glyph of warding to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
-                        `
+                    } else if (parseInt(slot) > 2) {
+                        generatedLogs = generatedLogs +  `Simulcrum adding glyph of warding to room ` + (generatedData.rooms.length - 1).toString() + " at level " + slot + `
+`
                         var dice = (i + 5)
                         generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d8 += dice
                         generatedData.rooms[generatedData.rooms.length - 1].wards++
@@ -142,18 +142,18 @@
         while (damageTypes.length > 0) {
             if (!simulCrunCanWish) {
                 generatedLogs = generatedLogs +  `create new simulcrum with wish, use one level 9 spell
-            `
+`
                 spellslots[9]--
                 simulCrunCanWish = true
             }
-            wardRoom()
+            wardRoom(9)
             generatedLogs = generatedLogs +  `simulcrum grants resistance to` + damageTypes[0] + ` with wish, level 9
-            `
+`
             generatedData.resistance.push(damageTypes.shift())
             simulCrumspellslots[9]--
             if (Math.floor(Math.random() * 3) === 3) {
                 generatedLogs = generatedLogs +  `simulcrum fails save, can no longer wish 
-                `
+`
                 simulCrunCanWish = false
             }
             cycleDay()
@@ -162,7 +162,7 @@
 
     var buildCloneRoom = function(){
         generatedLogs = generatedLogs +  `Create clone in room using 9th level spell` + (generatedData.rooms.length - 1).toString() + `
-        `
+`
         generatedData.rooms[generatedData.rooms.length - 1].cloneRoom = true
         spellslots[9]--
         wardRoom()
@@ -180,7 +180,7 @@
             for(var i = 0; i < timeInRoom; i++){
                 if(daysRun >= daysFrom20){
                     generatedLogs = generatedLogs + ( `On the ` + daysRun  + ` day we stop creating rooms
-                    `)
+`)
                     break
                 }
                 wardRoom()
