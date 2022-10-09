@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h1>Yeet</h1>
+
+
+</body>
+
+</html>
+<script>
+
+    var daysFrom20 = 69420
+    var daysRun = 0
+    var timeInRoom = 10
+    var clones = 20000
+    const spellslotsStart = {
+        1: 4,
+        2: 3,
+        3: 3,
+        4: 3,
+        5: 3,
+        6: 2,
+        7: 2,
+        8: 1,
+        9: 1,
+    }
+    var spellslots = {
+        1: 4,
+        2: 3,
+        3: 3,
+        4: 3,
+        5: 3,
+        6: 2,
+        7: 2,
+        8: 1,
+        9: 1,
+    }
+
+    const simulCrumspellslotsStart = {
+        1: 4,
+        2: 3,
+        3: 3,
+        4: 3,
+        5: 3,
+        6: 2,
+        7: 2,
+        8: 1,
+        9: 1,
+    }
+    var simulCrumspellslots = {
+        1: 4,
+        2: 3,
+        3: 3,
+        4: 3,
+        5: 3,
+        6: 2,
+        7: 2,
+        8: 1,
+        9: 1,
+    }
+    var generatedData = {
+        rooms: [],
+        resistance: []
+    }
+    var generatedLogs = ""
+
+    var cycleDay = function () {
+        for (slots in spellslotsStart) {
+            spellslots[slots] = spellslotsStart[slots]
+            simulCrumspellslots[slots] = simulCrumspellslotsStart[slots]
+        }
+        daysRun++
+        generatedLogs = generatedLogs +  `long rest, day is ` + daysRun + `
+        `
+    }
+
+    var newDemiplane = function () {
+        if (spellslots[8] > 0) {
+            generatedData.rooms.push({
+                wards: [],
+                symbols: [],
+                totalDamage: {
+                    d10: 0,
+                    d8: 0
+                },
+                cloneRoom: false
+            })
+            spellslots[8]--
+        }
+        generatedLogs = generatedLogs +  `Create room  ` + (generatedData.rooms.length - 1).toString() + ` using demiplane, level 8
+        `
+
+    }
+
+    var wardRoom = function (excludeSpellSlots) {
+        for (var slot in spellslots) {
+            for (var i = 0; i < spellslots[slot]; i++) {
+
+                if (slot > 6) {
+                    generatedLogs = generatedLogs +  `Adding symbol to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
+                    `
+                    generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d10 += 10
+                    generatedData.rooms[generatedData.rooms.length - 1].symbols.push("Death, 10d10")
+
+                } else if (slot > 2) {
+                    generatedLogs = generatedLogs +  `Adding glyph of warding to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
+                    `
+                    var dice = (i + 5)
+                    generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d8 += dice
+                    generatedData.rooms[generatedData.rooms.length - 1].wards.push("Thunder Ward, " + dice + "d10")
+                }
+                }
+                spellslots[i] = 0
+            if (!excludeSpellSlots || slot != excludeSpellSlots) {
+                for (var i = 0; i < simulCrumspellslots[slot]; i++) {
+
+                    if (slot > 6) {
+                        generatedLogs = generatedLogs +  `Simulcrum adding symbol to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
+                        `
+                        generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d10 += 10
+                        generatedData.rooms[generatedData.rooms.length - 1].symbols.push("Death, 10d10")
+
+                    } else if (slot > 2) {
+                        generatedLogs = generatedLogs +  `Simulcrum adding glyph of warding to room ` + (generatedData.rooms.length - 1).toString() + " at level " + (i + 1) + `
+                        `
+                        var dice = (i + 5)
+                        generatedData.rooms[generatedData.rooms.length - 1].totalDamage.d8 += dice
+                        generatedData.rooms[generatedData.rooms.length - 1].wards.push("Thunder Ward, " + dice + "d10")
+                    }
+                }
+                simulCrumspellslots[i] = 0
+            }
+        }
+    }
+
+    var tryCreateResistance = function () {
+        var damageTypes = ["acid", "bludgeoning", "cold", "fire", "force", "lightning", "necrotic", "piercing", "poison", "psychic", "radiant", "slashing", "thunder"]
+        newDemiplane()
+        var simulCrunCanWish = false
+        while (damageTypes.length > 0) {
+            if (!simulCrunCanWish) {
+                generatedLogs = generatedLogs +  `create new simulcrum with wish, use one level 9 spell
+            `
+                spellslots[9]--
+                simulCrunCanWish = true
+            }
+            wardRoom()
+            generatedLogs = generatedLogs +  `simulcrum grants resistance to` + damageTypes[0] + ` with wish, level 9
+            `
+            generatedData.resistance.push(damageTypes.shift())
+            simulCrumspellslots[9]--
+            if (Math.floor(Math.random() * 3) === 3) {
+                generatedLogs = generatedLogs +  `simulcrum fails save, can no longer wish 
+                `
+                simulCrunCanWish = false
+            }
+            cycleDay()
+        }
+    }
+
+    var buildCloneRoom = function(){
+        newDemiplane()
+        generatedLogs = generatedLogs +  `Create clone in room using 9th level spell` + (generatedData.rooms.length - 1).toString() + `
+        `
+        generatedData.rooms[generatedData.rooms.length - 1].cloneRoom = true
+        spellslots[9]--
+        wardRoom()
+        cycleDay()
+    }
+
+    var runAll = function(){
+        tryCreateResistance()
+        for(var i = 0; i < clones; i ++){
+            buildCloneRoom()
+        }
+        while(daysRun < daysFrom20){
+            newDemiplane()
+            for(var i = 0; i < timeInRoom; i++){
+                if(daysRun >= daysFrom20){
+                    generatedLogs = generatedLogs + ( `On the ` + daysRun  + ` day we stop creating rooms
+                    `)
+                    break
+                }
+                wardRoom()
+                cycleDay()
+            }
+        }
+        console.log(generatedData)
+        console.log(generatedLogs)
+    }
+</script>
